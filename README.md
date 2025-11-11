@@ -150,7 +150,7 @@ Kriteria:
 * Respons JSON valid.
 * Implementasi `Eloquent ORM` untuk relasi dan pagination.
 * Tidak menampilkan password dalam response.
-* Email dikirim menggunakan Laravel Mail (simulasi atau Mailtrap).
+* Email dikirim menggunakan Laravel Mail (simulasi aja).
 
 ---
 
@@ -158,10 +158,10 @@ Kriteria:
 
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone <https://github.com/gumuruhsspj/php-code-test.git>
 
 # Masuk ke folder proyek
-cd laravel-rest-api
+cd php-code-test
 
 # Install dependencies
 composer install
@@ -204,5 +204,4 @@ php artisan serve
 
 ## 📜 Lisensi
 
-Proyek ini dilisensikan di bawah MIT License.
-
+Proyek ini dilisensikan di bawah License Personal.
