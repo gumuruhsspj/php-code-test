@@ -4,7 +4,7 @@
 
 ## 📘 Petunjuk Pemakaian
 
-Proyek ini merupakan **simple REST API** yang dibangun menggunakan **Laravel 10**.  
+Proyek ini merupakan simple REST API yang dibangun menggunakan Laravel 10.  
 Terdapat dua endpoint utama:
 
 ---
@@ -12,28 +12,28 @@ Terdapat dua endpoint utama:
 ## 🚀 API Endpoints
 
 ### 1️⃣ Create User API  
-**Endpoint:**  
+Endpoint:  
 ```
 
 POST /api/users
 
 ````
 
-**Request Input:**
+Request Input:
 | Field | Type | Required | Description |
 |--------|------|-----------|--------------|
 | email | string | ✅ | Valid email format |
 | password | string | ✅ | Minimum 8 characters |
 | name | string | ✅ | 3–50 characters |
 
-**Functionality:**
+Functionality:
 - Menyimpan data user baru ke tabel `users`.
-- Mengirim **dua email**:
+- Mengirim dua email:
   1. Kepada user baru sebagai konfirmasi akun.
   2. Kepada administrator sistem untuk pemberitahuan user baru.
 - Mengembalikan response berisi detail user yang baru dibuat (tanpa password).
 
-**Response Example:**
+Response Example:
 ```json
 {
   "id": 123,
@@ -47,13 +47,13 @@ POST /api/users
 
 ### 2️⃣ Get Users API
 
-**Endpoint:**
+Endpoint:
 
 ```
 GET /api/users
 ```
 
-**Request Input (optional):**
+Request Input (optional):
 
 | Parameter | Type    | Description                                    |
 | --------- | ------- | ---------------------------------------------- |
@@ -61,7 +61,7 @@ GET /api/users
 | page      | integer | Default: 1                                     |
 | sortBy    | string  | Possible values: `name`, `email`, `created_at` |
 
-**Functionality:**
+Functionality:
 
 * Mengambil daftar user aktif dari tabel `users` (paginated).
 * Dapat difilter menggunakan `search` (nama/email).
@@ -80,7 +80,7 @@ GET /api/users
 | Manager       | Hanya dapat mengedit user dengan role `user` |
 | User          | Hanya dapat mengedit dirinya sendiri         |
 
-**Response Example:**
+Response Example:
 
 ```json
 {
@@ -138,13 +138,13 @@ GET /api/users
 
 ## 🧠 Test Description & Requirements
 
-**Objective:**
+Objective:
 Membuat dua endpoint REST API yang berfungsi penuh:
 
-1. **Create User API**
-2. **Get Users API**
+1. Create User API
+2. Get Users API
 
-**Kriteria:**
+Kriteria:
 
 * Menggunakan Laravel 10.
 * Respons JSON valid.
@@ -183,7 +183,7 @@ php artisan serve
 
 ## 📬 Testing API (Contoh dengan Postman)
 
-1. **POST /api/users**
+1. POST /api/users
 
    * Body → `raw JSON`
 
@@ -195,7 +195,7 @@ php artisan serve
    }
    ```
 
-2. **GET /api/users**
+2. GET /api/users
 
    * Params (opsional):
      `search`, `page`, `sortBy`
@@ -204,5 +204,5 @@ php artisan serve
 
 ## 📜 Lisensi
 
-Proyek ini dilisensikan di bawah **MIT License**.
+Proyek ini dilisensikan di bawah MIT License.
 
