@@ -1,66 +1,217 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+Berikut versi **README.md** baru yang sudah diganti total sesuai dengan instruksi tugas REST API-mu:
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+```markdown
+# Simple REST API - Laravel 10
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📘 Petunjuk Pemakaian
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Proyek ini merupakan **simple REST API** yang dibangun menggunakan **Laravel 10**.  
+Terdapat dua endpoint utama:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🚀 API Endpoints
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 1️⃣ Create User API  
+**Endpoint:**  
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+POST /api/users
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+````
 
-## Laravel Sponsors
+**Request Input:**
+| Field | Type | Required | Description |
+|--------|------|-----------|--------------|
+| email | string | ✅ | Valid email format |
+| password | string | ✅ | Minimum 8 characters |
+| name | string | ✅ | 3–50 characters |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Functionality:**
+- Menyimpan data user baru ke tabel `users`.
+- Mengirim **dua email**:
+  1. Kepada user baru sebagai konfirmasi akun.
+  2. Kepada administrator sistem untuk pemberitahuan user baru.
+- Mengembalikan response berisi detail user yang baru dibuat (tanpa password).
 
-### Premium Partners
+**Response Example:**
+```json
+{
+  "id": 123,
+  "email": "example@example.com",
+  "name": "John Doe",
+  "created_at": "2024-11-25T12:34:56Z"
+}
+````
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+### 2️⃣ Get Users API
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Endpoint:**
 
-## Code of Conduct
+```
+GET /api/users
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+**Request Input (optional):**
 
-## Security Vulnerabilities
+| Parameter | Type    | Description                                    |
+| --------- | ------- | ---------------------------------------------- |
+| search    | string  | Filter berdasarkan nama atau email             |
+| page      | integer | Default: 1                                     |
+| sortBy    | string  | Possible values: `name`, `email`, `created_at` |
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**Functionality:**
 
-## License
+* Mengambil daftar user aktif dari tabel `users` (paginated).
+* Dapat difilter menggunakan `search` (nama/email).
+* Dapat disortir berdasarkan `sortBy` (default: `created_at`).
+* Mengabaikan field `password` dalam response.
+* Menambahkan field tambahan:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+  * `orders_count`: total jumlah pesanan (`orders`) per user.
+  * `can_edit`: status apakah user yang sedang login dapat mengedit user tersebut.
+
+#### 🔒 Rules untuk `can_edit`:
+
+| Role          | Hak Edit                                     |
+| ------------- | -------------------------------------------- |
+| Administrator | Dapat mengedit semua user                    |
+| Manager       | Hanya dapat mengedit user dengan role `user` |
+| User          | Hanya dapat mengedit dirinya sendiri         |
+
+**Response Example:**
+
+```json
+{
+  "page": 1,
+  "users": [
+    {
+      "id": 123,
+      "email": "example@example.com",
+      "name": "John Doe",
+      "role": "user",
+      "created_at": "2024-11-25T12:34:56Z",
+      "orders_count": 10,
+      "can_edit": true
+    },
+    {
+      "id": 124,
+      "email": "another@example.com",
+      "name": "Jane Smith",
+      "role": "manager",
+      "created_at": "2024-11-24T11:20:30Z",
+      "orders_count": 5,
+      "can_edit": false
+    }
+  ]
+}
+```
+
+---
+
+## 🧩 Database Structure
+
+### 🧑‍💻 users Table
+
+| Column     | Type         | Constraints                 |
+| ---------- | ------------ | --------------------------- |
+| id         | INT          | Primary Key, Auto Increment |
+| email      | VARCHAR(255) | Unique, Not Null            |
+| password   | VARCHAR(255) | Not Null                    |
+| name       | VARCHAR(255) | Not Null                    |
+| role       | ENUM         | Default: `user`             |
+| active     | BOOLEAN      | Default: `true`             |
+| created_at | DATETIME     | Default: Current Timestamp  |
+
+---
+
+### 📦 orders Table
+
+| Column     | Type     | Constraints                 |
+| ---------- | -------- | --------------------------- |
+| id         | INT      | Primary Key, Auto Increment |
+| user_id    | INT      | Foreign Key → users.id      |
+| created_at | DATETIME | Default: Current Timestamp  |
+
+---
+
+## 🧠 Test Description & Requirements
+
+**Objective:**
+Membuat dua endpoint REST API yang berfungsi penuh:
+
+1. **Create User API**
+2. **Get Users API**
+
+**Kriteria:**
+
+* Menggunakan Laravel 10.
+* Respons JSON valid.
+* Implementasi `Eloquent ORM` untuk relasi dan pagination.
+* Tidak menampilkan password dalam response.
+* Email dikirim menggunakan Laravel Mail (simulasi atau Mailtrap).
+
+---
+
+## ⚙️ Cara Menjalankan Proyek
+
+```bash
+# Clone repository
+git clone <repository-url>
+
+# Masuk ke folder proyek
+cd laravel-rest-api
+
+# Install dependencies
+composer install
+
+# Buat file environment
+cp .env.example .env
+
+# Generate application key
+php artisan key:generate
+
+# Jalankan migrasi
+php artisan migrate
+
+# Jalankan server
+php artisan serve
+```
+
+---
+
+## 📬 Testing API (Contoh dengan Postman)
+
+1. **POST /api/users**
+
+   * Body → `raw JSON`
+
+   ```json
+   {
+     "email": "user@example.com",
+     "password": "password123",
+     "name": "John Doe"
+   }
+   ```
+
+2. **GET /api/users**
+
+   * Params (opsional):
+     `search`, `page`, `sortBy`
+
+---
+
+## 📜 Lisensi
+
+Proyek ini dilisensikan di bawah **MIT License**.
+
+```
+
+---
+
+Apakah kamu ingin saya tambahkan juga contoh **struktur folder proyek** (seperti `routes/api.php`, `app/Http/Controllers/UserController.php`, dll) di bagian bawah README biar sekalian panduan setup-nya lengkap?
+```
