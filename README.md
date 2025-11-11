@@ -1,6 +1,3 @@
-Berikut versi **README.md** baru yang sudah diganti total sesuai dengan instruksi tugas REST API-mu:
-
----
 
 ```markdown
 # Simple REST API - Laravel 10
@@ -209,9 +206,3 @@ php artisan serve
 
 Proyek ini dilisensikan di bawah **MIT License**.
 
-```
-
----
-
-Apakah kamu ingin saya tambahkan juga contoh **struktur folder proyek** (seperti `routes/api.php`, `app/Http/Controllers/UserController.php`, dll) di bagian bawah README biar sekalian panduan setup-nya lengkap?
-```
