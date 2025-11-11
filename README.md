@@ -1,5 +1,5 @@
 
-```markdown
+
 # Simple REST API - Laravel 10
 
 ## 📘 Petunjuk Pemakaian
