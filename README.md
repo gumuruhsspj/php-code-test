@@ -152,14 +152,7 @@ Kriteria:
 * Tidak menampilkan password dalam response.
 * Email dikirim menggunakan Laravel Mail (simulasi aja).
 
----
 
-## 📖 Developer Notes
-
-For additional explanation, workflow, and guidance for this project, please refer to the Developer Notes PDF:  
-[Developer Notes (PDF)](public/dev_notes/developer_notes.pdf)
-
----
 
 ## 📬 Testing API (Contoh dengan Postman)
 
@@ -180,8 +173,12 @@ For additional explanation, workflow, and guidance for this project, please refe
    * Params (opsional):
      `search`, `page`, `sortBy`
 
+
 ---
 
-## 📜 Lisensi
+## 📖 Developer Notes
 
-Proyek ini dilisensikan di bawah License Personal.
+For additional explanation, workflow, and guidance for this project, please refer to the Developer Notes PDF:  
+[Developer Notes (PDF)](public/dev_notes/developer_notes.pdf)
+
+---
