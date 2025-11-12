@@ -8,22 +8,40 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * Creates the 'users' table with required fields.
      */
-       public function up(): void
-{
-    Schema::create('users', function (Blueprint $table) {
-        $table->id();
-        $table->string('email')->unique();
-        $table->string('password');
-        $table->string('name', 255);
-        $table->enum('role', ['admin', 'manager', 'user'])->default('user');
-        $table->boolean('active')->default(true);
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('users', function (Blueprint $table) {
+
+            // Primary key
+            $table->id();
+
+            // User email, unique
+            $table->string('email')->unique();
+
+            // User password
+            $table->string('password');
+
+            // User full name
+            $table->string('name', 255);
+
+            // User role: admin, manager, or user
+            $table->enum('role', ['admin', 'manager', 'user'])->default('user');
+
+            // Active status flag
+            $table->boolean('active')->default(true);
+
+            // created_at and updated_at timestamps
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.
+     *
+     * Drops the 'users' table if it exists.
      */
     public function down(): void
     {
