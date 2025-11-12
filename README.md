@@ -154,30 +154,10 @@ Kriteria:
 
 ---
 
-## ⚙️ Cara Menjalankan Proyek
+## 📖 Developer Notes
 
-```bash
-# Clone repository
-git clone <https://github.com/gumuruhsspj/php-code-test.git>
-
-# Masuk ke folder proyek
-cd php-code-test
-
-# Install dependencies
-composer install
-
-# Buat file environment
-cp .env.example .env
-
-# Generate application key
-php artisan key:generate
-
-# Jalankan migrasi
-php artisan migrate
-
-# Jalankan server
-php artisan serve
-```
+For additional explanation, workflow, and guidance for this project, please refer to the Developer Notes PDF:  
+[Developer Notes (PDF)](public/dev_notes/developer_notes.pdf)
 
 ---
 
