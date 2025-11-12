@@ -147,8 +147,30 @@ class UserController extends Controller
 
     /** Placeholder for sending notification emails */
     private function sendNotificationEmails(User $user)
-    {
-        // Example: event(new UserRegistered($user));
-        // Keep async (queued) in production for better performance
+{
+    // This function sends a notification email after user registration.
+    // The email sending method depends on your MAIL_MAILER configuration in .env
+    // Options:
+    // 1. SMTP using company domain
+    // 2. Third-party service (Mailgun, SendGrid, etc.)
+
+    // modify the .env first before proceed
+
+    try {
+        // Send email to the new user
+        // activate this one below as needed
+        /*Mail::to($user->email)->send();
+
+      
+        $adminEmail = config('mail.admin_address'); // define in .env
+        if ($adminEmail) {
+            Mail::to($adminEmail)->send();
+        } */
+
+    } catch (\Exception $e) {
+        // Log the error for debugging; email failure won't block user creation
+        \Log::error('Failed to send notification email: ' . $e->getMessage());
     }
+}
+
 }
