@@ -9,101 +9,106 @@ use App\Models\Order;
 
 class UserController extends Controller
 {
-    
+    /**
+     * Handle new user registration process.
+     * Steps: validate input → create user → send notification → return response.
+     */
     public function store(Request $req)
     {
-        // Validate the incoming user registration data
+        // 1. Validate incoming request data (email, password, name)
         $validated = $this->validateUserRequest($req);
 
-        // Create a new user record using the validated data
+        // 2. Create a new user record using validated data
         $user = $this->createUser($validated);
 
-        // TODO: Decide whether to send emails through a domain sender or API integration
+        // 3. (Optional) Send email notification to the user
         $this->sendNotificationEmails($user);
 
-        // Return a formatted JSON response for the created user
+        // 4. Return JSON response with created user info
         return $this->formatUserResponse($user);
     }
 
-
+    /**
+     * Display paginated user list with optional search and sorting.
+     * Steps: get params → build query → paginate → transform → respond.
+     */
     public function index(Request $req)
     {
-        // Extract search, sorting, and pagination parameters from the request
+        // Get optional search keyword, sort field, and current page number
         $search = $req->get('search');
         $sortBy = $req->get('sortBy', 'created_at');
         $page = $req->get('page', 1);
-        $currentUser = auth()->user(); // Get the authenticated user
 
-        // Build the base query with optional search and sorting
+        // Get current authenticated user (for edit permission logic)
+        $currentUser = auth()->user();
+
+        // Build the base query (filter active users, apply search & sorting)
         $query = $this->buildUserQuery($search, $sortBy);
 
-        // Paginate the user list (10 items per page)
+        // Get paginated results (10 per page)
         $users = $query->paginate(10, ['*'], 'page', $page);
 
-        // Transform the user list to include extra information (orders count, can_edit flag, etc.)
+        // Add extra info to each user (orders count & permission flag)
         $transformed = $this->transformUsers($users, $currentUser);
 
-        // Return the paginated users as JSON
+        // Return paginated JSON response
         return response()->json([
             'page' => $users->currentPage(),
             'users' => $transformed
         ]);
     }
 
+    /** Validate request data before user creation */
     private function validateUserRequest(Request $request)
     {
-        // Validate request data before creating a new user
         return $request->validate([
             'email'     => 'required|email|unique:users',
-            'password'  => 'required|min:8', 
+            'password'  => 'required|min:8',
             'name'      => 'required|min:3|max:50'
         ]);
     }
 
+    /** Create user record in database (password is securely hashed) */
     private function createUser(array $data): User
     {
-        // BUG: You must wrap this method body with curly braces
-        // Also, passwords should be hashed before storing in the database
         return User::create([
             'email' => $data['email'],
-            'password' => bcrypt($data['password']), // Use bcrypt() for security
+            'password' => bcrypt($data['password']),
             'name' => $data['name']
         ]);
     }
 
-    private function buildUserQuery( $search,  $sortBy)
+    /** Build user query with active filter, search, and sorting */
+    private function buildUserQuery($search, $sortBy)
     {
-        // Start the query with only active users
         $query = User::query()->where('active', true);
 
         if (!empty($search)) {
-            // BUG: Remove the semicolon after where() – it breaks chaining
-            // Use parentheses to group OR conditions properly
+            // Apply search by name or email
             $query->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");
             });
         }
 
-        // Apply sorting in descending order
+        // Sort results by given field (default: newest first)
         $query->orderBy($sortBy, 'desc');
-
         return $query;
     }
 
+    /** Transform user data before returning response */
     private function transformUsers($users, $currentUser)
     {
         $result = [];
 
-        // Loop through each user in the collection
         foreach ($users as $user) {
-            // Count the number of orders associated with this user
+            // Count user’s total orders
             $ordersCount = Order::where('user_id', $user->id)->count();
 
-            // Determine if the current user has permission to edit this user
+            // Check if current user has permission to edit this user
             $canEdit = $this->canEditUser($currentUser, $user);
 
-            // Transform and append to the response array
+            // Format user data with additional info
             $result[] = [
                 'id' => $user->id,
                 'email' => $user->email,
@@ -118,9 +123,9 @@ class UserController extends Controller
         return $result;
     }
 
+    /** Format single user object into JSON */
     private function formatUserResponse(User $user)
     {
-        // Format a single user response for JSON output
         return response()->json([
             'id' => $user->id,
             'email' => $user->email,
@@ -129,37 +134,21 @@ class UserController extends Controller
         ]);
     }
 
+    /** Define user edit permission logic */
     private function canEditUser($currentUser, $targetUser)
     {
-        // If no authenticated user, editing is not allowed
-        if (!$currentUser) {
-            return false;
-        }
+        if (!$currentUser) return false;             // Not logged in
+        if ($currentUser->role === 'admin') return true;  // Admin: can edit all
+        if ($currentUser->role === 'manager' && $targetUser->role === 'user') return true; // Manager: edit users
+        if ($currentUser->id === $targetUser->id) return true; // User: edit self
 
-        // Admins can edit all users
-        if ($currentUser->role === 'admin') {
-            return true;
-        }
-
-        // Managers can edit regular users
-        if ($currentUser->role === 'manager' && $targetUser->role === 'user') {
-            return true;
-        }
-
-        // Users can edit their own profile
-        if ($currentUser->id === $targetUser->id) {
-            return true;
-        }
-
-        // Default: no permission
-        return false;
+        return false; // Default: no permission
     }
 
+    /** Placeholder for sending notification emails */
     private function sendNotificationEmails(User $user)
     {
-       // Placeholder: This method should trigger an event or dispatch a mail job
-       // Example: event(new UserRegistered($user));
-       // Keep async (queued) for performance in production
+        // Example: event(new UserRegistered($user));
+        // Keep async (queued) in production for better performance
     }
-
 }
